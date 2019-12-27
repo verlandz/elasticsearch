@@ -81,9 +81,9 @@ tutorial of basic elastic + sample web project with `Go`
 
 
 # Getting Started
-- [Setup](), how to setup elastic and cerebro
-- [Walkthrough](), how to use this project
-- [Query](), query knowledge
+- [Setup](https://github.com/verlandz/elasticsearch/blob/master/docs/SETUP.md), how to setup used tools
+- [Walkthrough](https://github.com/verlandz/elasticsearch/blob/master/docs/WALKTHOUGH.md), how to use this project + basic elastic
+- [Query](https://github.com/verlandz/elasticsearch/blob/master/docs/QUERY.md), query knowledge
 
 
 # References

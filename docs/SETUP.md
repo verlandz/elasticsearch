@@ -47,10 +47,10 @@ using `elasticsearch-7.5.0`
 - open 3 terminals.
 - cd to `tools/node-robot-1`, `tools/node-robot-2` and `tools/node-robot-3`
 - for each, run `./bin/elasticsearch`
-- check `http://localhost:9201/`, `http://localhost:9202/` and `http://localhost:9203/` to ensure node activated.
+- check `http://localhost:9201/`, `http://localhost:9202/` and `http://localhost:9203/` to ensure node is activated.<br>
 ![_](https://i.ibb.co/BrrvYqL/7.png)
-- check `http://localhost:9201/_cat` to get list all info related to nodes.
-![_cat](https://i.ibb.co/wd47bQ6/8.png )
+- check `http://localhost:9201/_cat` to get list all info related to nodes.<br>
+![_cat](https://i.ibb.co/wd47bQ6/8.png)
 ```
 You can focus here:
 http://localhost:9201/_cat/allocation?v
@@ -103,3 +103,10 @@ using `cerebro-0.8.5`, for elastic UI
 - click the `cluster-robot`, and it will direct you to dashboard
 ![cerebro-dashboard](https://i.ibb.co/4WnXRcY/2.png)
 - you can look [here](https://youtu.be/ZjVmg9fftUM?list=LLbjgbCc74UHvkqzFemEiBVQ&t=115) for explanation of cerebro's feature
+
+
+## Postman
+using `postman-7.14.0`, helper for API request
+- [download here](https://www.getpostman.com/downloads/)
+- import collection from `tools/sample_conf/postman-collection.json` to your postman.
+- **FYI**, most elastic request play body request, so don't forget to check the `body`.
