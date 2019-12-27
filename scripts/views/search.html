@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ROBOT</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .form-control:focus {
+            box-shadow: none;
+        }
+        .form-control::placeholder {
+            font-size: 0.95rem;
+            color: #aaa;
+            font-style: italic;
+        }
+        .margin5px {
+            margin: 5px;
+        }
+        .hand-pointer:hover {
+            cursor: pointer;
+        }
+        .title {
+            font-size:24px
+        }
+        .sm-info {
+            font-size:9px
+        }
+    </style>
+</head>
+<body>
+    <form id="search-form" action="/search" method="GET">
+        <input type="number" name="pg" value={{.currPage}} hidden>
+        <input type="text" name="ob"  value="{{.currOB}}" hidden>
+        <input type="text" name="fb"  value="{{.currFB}}" hidden>
+        <div class="row" style="padding-top:20px;margin:0px;min-height:650px;max-height:650px">
+            <!-- LEFT NAV -->
+            <div class="col-sm-4">
+                <!-- SEARCH BAR -->
+                <div style="padding-top:50px">
+                    <img src="https://i.pinimg.com/600x315/2e/7e/e5/2e7ee557deb8cd3c9ded97c99ae1858e.jpg" width="100%">
+                    <div class="p-2 rounded rounded-pill shadow-sm mb-4">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control border-0" placeholder="Looking for something?" value='{{.currSearch}}'>
+                            <div><button type="submit" class="submit-btn btn btn-link text-dark"><i class="fa fa-search"></i></button></div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <!-- ORDER BY -->
+                    <div class="order-by"></div><hr>
+                    <!-- FILTER BY -->
+                    <div class="filter-by"></div><hr>
+                    <!-- LIST OF ATTRIBUTES -->
+                    <div class="list-of-attr"></div><hr>
+                    <!-- LIST OF ABILITIES-->
+                    <div class="list-of-abi"></div>
+                </div>
+            </div>
+            <!-- RIGHT NAV -->
+            <div class="col-sm-8">
+                <!-- PAGINATION -->
+                <div class="card-columns search-pagination row"></div>
+                <!-- CARD -->
+                <div class="card-columns search-card"></div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+<script>
+    result = JSON.parse('{{.result}}')
+    console.log(result)
+
+/* INIT */
+
+    totalData = '{{.totalData}}'
+    hitData = '{{.hitData}}'
+    data = result.hits.hits
+    bucketAttribute = result.aggregations.attribute.buckets
+    bucketAbility = result.aggregations.ability.buckets
+    listOrderBy = ["Name","Date","Version","Location"]
+    listFilterBy = ["Normal","Fighting","Flying","Poison","Ground","Rock","Bug","Ghost","Steel","Fire","Water","Grass","Electric","Psychic","Ice","Dragon","Fairy","Dark"]
+
+/* MAIN */
+
+    buildSearchPagination()
+    buildSearchCard()
+    buildOrderBy()
+    buildFilterBy()
+    buildListOfAttribute()
+    buildListOfAbility()
+
+    function buildSearchPagination(){
+        var s = ""
+        if (hitData == 0){
+            s +=
+            '<div class="col-sm-12" align="center" style="margin-top:300px"><i>Let\'s search something else.</i></div>';
+        } else {
+            s +=
+            '<div class="col-sm-6">'+
+                'Result <b>{{.minData}}-{{.maxData}}</b> from <b>'+totalData+'</b> robots <small class="sm-info"><i>('+result.took/1000+' seconds)</i></small>'+
+            '</div>'+
+            '<div class="col-sm-6" align="right" >'+
+                '<span type="" class="btn dec-pg hand-pointer"><i class="fa fa-caret-left"></i></span>'+
+                ' Page {{.currPage}}/{{.maxPage}} '+
+                '<span type="" class="btn inc-pg hand-pointer"><i class="fa fa-caret-right"></i></span>'+
+            '</div>';
+        }
+        $(".search-pagination").append(s)
+    }
+
+    function buildSearchCard(){
+        var s = ""
+        for(i=0;i<data.length;i++){
+            dt = data[i]._source
+            
+            attr = dt.attribute
+            s_attr = ""
+            for(j=0;j<attr.length;j++){
+                s_attr += '<span class="btn btn-dark margin5px">'+attr[j].name+' <small class="sm-info">'+attr[j].power+' pts </small></span>';
+            }
+
+            now = i+parseInt("{{.minData}}",10)
+
+            s +=
+            '<div class="card">'+
+                '<div class="card-body">'+
+                    '<p class="card-title">'+
+                        '<small class="sm-info" align="right">'+now+' </small><b class="title">'+dt.name+'</b>'+
+                        '<span class="sm-info"> v'+dt.release.version+'</span><br>'+
+                        '<small class="text-muted">Made in <b>'+dt.release.location+'</b> at <b>'+buildDate(dt.release.date)+'</b></small><br>'+
+                    '</p>'+
+                    '<hr>'+
+                    '<p class="card-text">'+
+                        '<b>Ability :</b><br><i>'+dt.ability.join(", ")+'</i><br>'+
+                    '</p>'+
+                    '<p class="card-text">'+s_attr+'</p>'+
+                    '<hr>'+
+                    '<div align="center"><small class="text-muted">Search Score<br>'+data[i]._score+'</small></div>'+
+                '</div>'+
+            '</div>';
+        }
+        $(".search-card").append(s)
+    }
+
+    function buildOrderBy(){
+        var s = '<b>Order by: <small class="sm-info">ASC</small></b><br>';
+        for(i=0;i<listOrderBy.length;i++){
+            s += '<span name="ob" class="btn btn-outline-dark margin5px hand-pointer" value="'+listOrderBy[i]+'"> '+listOrderBy[i]+' </span>';
+        }
+        $(".order-by").append(s)
+        
+        // check
+        $('span[name="ob"][value="{{.currOB}}"]').removeClass("btn-outline-dark").addClass("btn-dark");
+    }
+
+    function buildFilterBy(){
+        var s = '<b>Filter by: <small class="sm-info">MIN.SCORE > 1</small></b><br>';
+        for(i=0;i<listFilterBy.length;i++){
+            s += '<span name="fb" class="btn btn-outline-dark margin5px hand-pointer" value="'+listFilterBy[i]+'"> '+listFilterBy[i]+' </span>';
+        }
+        $(".filter-by").append(s)
+        
+        // check
+        arr = ("{{.currFB}}").split(",")
+        for(i=0;i<arr.length;i++){
+            $('span[name="fb"][value="'+arr[i]+'"]').removeClass("btn-outline-dark").addClass("btn-dark");
+        }
+    }
+
+    function buildListOfAttribute(){
+        var s = '<b>List of Attributes <small class="sm-info"> ('+bucketAttribute.length+' unique)</small></b><br>';
+        for(i=0;i<bucketAttribute.length;i++){
+            s += '<span class="btn btn-outline-dark margin5px btn-sm">'+bucketAttribute[i].key+' <small class="sm-info">('+bucketAttribute[i].doc_count+')</small></span>';
+        }
+        $(".list-of-attr").append(s)
+    }
+
+    function buildListOfAbility(){
+        var s = '<b>List of Abilities <small class="sm-info"> ('+bucketAbility.length+' unique)</small></b><br>';
+        for(i=0;i<bucketAbility.length;i++){
+            s += '<span class="btn btn-outline-dark margin5px btn-sm">'+bucketAbility[i].key+' <small>('+bucketAbility[i].doc_count+')</small></span>';
+        }
+        $(".list-of-abi").append(s)
+    }
+
+    $('#search-form').submit(function() {
+        //
+    });
+
+/* SUPPORT */
+
+    function buildDate(date){
+        const months = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+        var mydate = new Date(date);
+        return months[mydate.getMonth()] + " "+ mydate.getDate() + ", " + mydate.getFullYear()
+    }
+
+    // decrement page 
+    $(document).on('click','.dec-pg',function(){
+        curr = parseInt($('input[name="pg"]').val(),10)
+        if(curr-1 > 0){
+            $('input[name="pg"]').val(curr-1);
+            $('.submit-btn').trigger('click');
+        }
+    })
+
+    // increment page 
+    $(document).on('click','.inc-pg',function(){
+        curr = parseInt($('input[name="pg"]').val(),10)
+        if (curr+1 <= "{{.maxPage}}"){
+            $('input[name="pg"]').val(curr+1);
+            $('.submit-btn').trigger('click');
+        }
+    })
+
+    // reset all
+    $('input[name="q"]').on('change', function() {
+        $('input[name="pg"]').val(0);
+        $('input[name="ob"]').val('');
+        $('input[name="fb"]').val('');
+    });
+
+    // order by
+    $('span[name="ob"]').on('click', function() {
+        val = $(this).attr("value");
+        curr_val = $('input[name="ob"]').val()
+
+        if (curr_val != val) {
+            $('input[name="ob"]').val(val);
+        } else {
+            $('input[name="ob"]').val('');
+        }
+
+        $('.submit-btn').trigger('click');
+    });
+
+    // filter by
+    $('span[name="fb"]').on('click', function() {
+        val = $(this).attr("value");
+        curr_val = $('input[name="fb"]').val()
+
+        arr = curr_val.split(",");
+        flag = false
+        next_val = ''
+        for(i=0;i<arr.length;i++){
+            if(arr[i]==val){
+                flag=true
+            } else {
+                if(next_val!="") next_val += ","+arr[i];
+                else next_val += arr[i];
+            }
+        }
+
+        if(!flag){
+            if(next_val!="") next_val += ","+val;
+            else next_val += val;
+        }
+
+        $('input[name="fb"]').val(next_val);
+        $('input[name="pg"]').val(1);
+        $('.submit-btn').trigger('click');
+    });
+
+</script>

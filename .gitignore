@@ -1,0 +1,9 @@
+# Ignore all tools thing except sample_conf
+tools/*
+!tools/sample_conf
+
+# Vendor
+vendor
+
+# Track for debugging
+track.txt
