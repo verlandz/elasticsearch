@@ -79,6 +79,23 @@ tutorial of basic elastic + sample web project with `Go`
     - jump to shard where data located (thanks to [routing](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-routing-field.html))
     - then searching the data in that shard
 
+### Health Status
+it divided by 3, `green`, `yellow` and `red` [read more](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html#cluster-health-api-desc).
+<br> **case:**
+<br> let's say you have `3 nodes, 3 primary, 1 replica`, and suddenly the node dead one by one, what will be happened ?
+- *3 nodes*, balance `green`
+```
+[1p 3r][2p 1r][3p 2r]
+```
+- *2 nodes*, still balanced (p & r in diff place), at first it will `yellow` then after reblance become `green`
+```
+[1p 3p 2r][2p 3r 1r]
+```
+- *1 nodes*, not balanced (p & r in same place), should be `red`
+```
+[1p 2p 3p 1r 2r 3r]
+```
+
 
 # Getting Started
 - [Setup](https://github.com/verlandz/elasticsearch/blob/master/docs/SETUP.md), how to setup used tools
