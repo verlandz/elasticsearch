@@ -99,7 +99,7 @@ it divided by 3, `green`, `yellow` and `red` [read more](https://www.elastic.co/
 
 # Getting Started
 - [Setup](https://github.com/verlandz/elasticsearch/blob/master/docs/SETUP.md), how to setup used tools
-- [Walkthrough](https://github.com/verlandz/elasticsearch/blob/master/docs/WALKTHOUGH.md), how to use this project + basic elastic
+- [Walkthrough](https://github.com/verlandz/elasticsearch/blob/master/docs/WALKTHROUGH.md), how to use this project + basic elastic
 - [Query](https://github.com/verlandz/elasticsearch/blob/master/docs/QUERY.md), query knowledge
 
 
