@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7eebb2c4-762e-4335-9b31-c63528873874",
+		"_postman_id": "8dc9c4e5-0ff6-4da8-b6d2-32c073b2fa4e",
 		"name": "ElasticSearch - Robot V1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -165,7 +165,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"gone\",\n    \"ability\": [\n        \"disappear\"\n    ]\n}",
+					"raw": "{\n    \"name\": \"Hkjy Bvb\",\n    \"release\": {\n        \"date\": \"2014-03-28T18:42:44Z\",\n        \"location\": \"Africa/Lome\",\n        \"version\": 4.3\n    },\n    \"ability\": [\n        \"Persuasive\",\n        \"Legal\",\n        \"People Judgment\",\n        \"Ability to handle Change\",\n        \"Woodworking\"\n    ],\n    \"attribute\": [\n        {\n            \"name\": \"Dragon\",\n            \"power\": 94\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"

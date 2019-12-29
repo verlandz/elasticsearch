@@ -77,6 +77,7 @@ a guideline step by step to do this project + basic elastic<br>
 - check `http://localhost:9201/_cat/shards?v` and you will see docs distribution
 - check `Cerebro` and you will see docs is increased
 ![alias](https://i.ibb.co/8rWwgQh/x2.png)
+- sometimes the insert data is not realtime, but if you search for some data it will show little by little, perhaps it's related to [this](https://discuss.elastic.co/t/elasticsearch-with-realtime-ingestion/72023/4)
 
 ### 5. Specific docs - insert, update, update partial, search, delete
 - run `Insert/Update Doc` in postman for insert
